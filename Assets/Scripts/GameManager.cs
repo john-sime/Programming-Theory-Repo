@@ -11,10 +11,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] List<GameObject> enemyPrefabList;
     public List<GameObject> targets = new List<GameObject>();
     public List<GameObject> enemies = new List<GameObject>();
+    private int highScore;
+    private MainUIHandler mainUIHandler;
+    [SerializeField] GameObject gameOverScreen;
 
     // Start is called before the first frame update
     void Start()
     {
+        highScore = ScoreManager.Instance.highScore;
+        mainUIHandler = GameObject.Find("Canvas").GetComponent<MainUIHandler>();
         NewLevel();
     }
 
@@ -39,6 +44,7 @@ public class GameManager : MonoBehaviour
         if (targets.Count == 0)
         {
             level++;
+            mainUIHandler.UpdateScore(level);
             foreach (GameObject enemy in enemies)
             {
                 Destroy(enemy.gameObject);
@@ -60,6 +66,18 @@ public class GameManager : MonoBehaviour
             {
                 enemy.GetComponent<PurpleEnemy>().MoveOrStay(turn);
             }
+        }
+    }
+
+    public void GameOver()
+    {
+        int score = level - 1;
+        if (score > highScore)
+        {
+            ScoreManager.Instance.score = score;
+            ScoreManager.Instance.SaveScore();
+            mainUIHandler.UpdateHighScore(score);
+            gameOverScreen.SetActive(true);
         }
     }
 }

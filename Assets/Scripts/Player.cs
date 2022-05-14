@@ -85,6 +85,7 @@ public class Player : MonoBehaviour
         else if (other.CompareTag("Enemy"))
         {
             Destroy(gameObject); // Trigger Game Over
+            gameManager.GameOver();
         }
     }
 }
